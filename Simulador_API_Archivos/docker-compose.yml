@@ -1,0 +1,9 @@
+version: "3.7"
+services:
+    api_workmanager_simulador:
+      container_name: api_workmanager_simulador
+      image: api_workmanager_simulador:V1.0
+      ports:
+         - 5052:5000
+      restart: always
+      privileged: true
