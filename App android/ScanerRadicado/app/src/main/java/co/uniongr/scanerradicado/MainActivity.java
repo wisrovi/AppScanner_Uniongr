@@ -5,6 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,7 +32,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        starCam();
+        //starCam();
+
+        androidx.fragment.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.scanQR, new ScanQr_Fragment());
+        ft.commit();
     }
 
     @Override
@@ -115,5 +122,20 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, InfoActivity.class);
         intent.putExtra(QR_MESSAGE, datos);
         startActivity(intent);
+    }
+
+    private void loadFragment(Fragment fragment) {
+        try {
+            // create a FragmentManager
+            FragmentManager fm = getFragmentManager();
+            // create a FragmentTransaction to begin the transaction and replace the Fragment
+            FragmentTransaction fragmentTransaction = fm.beginTransaction();
+            // replace the FrameLayout with new Fragment
+            fragmentTransaction.replace(R.id.scanQR,
+                    fragment);
+            fragmentTransaction.commit(); // save the changes
+        }catch (Exception e){
+
+        }
     }
 }

@@ -77,19 +77,20 @@ public class InfoActivity extends AppCompatActivity {
         });
 
         String message = "Radicado";
-        String data_important = "";
+        String data_important = "63-01-20220104000002";
 
         try {
             Intent intent = getIntent();
             message = intent.getStringExtra(MainActivity.QR_MESSAGE);
             if(message==null){
                 message = "Radicado";
+            }else{
+                data_important = message.substring(message.indexOf("Radicado"));
+                data_important = data_important.substring(data_important.indexOf(" "));
+                data_important = data_important.contains("\r") ? data_important.substring(0, data_important.indexOf("\r")) : data_important;
+                data_important = data_important.contains("\n") ? data_important.substring(0, data_important.indexOf("\n")) : data_important;
+                data_important = data_important.replace(" ","");
             }
-            data_important = message.substring(message.indexOf("Radicado"));
-            data_important = data_important.substring(data_important.indexOf(" "));
-            data_important = data_important.contains("\r") ? data_important.substring(0, data_important.indexOf("\r")) : data_important;
-            data_important = data_important.contains("\n") ? data_important.substring(0, data_important.indexOf("\n")) : data_important;
-            data_important = data_important.replace(" ","");
         }catch (Exception e){
 
         }
@@ -124,17 +125,20 @@ public class InfoActivity extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        //Toast.makeText(InfoActivity.this, response.toString(), Toast.LENGTH_LONG).show();
                         JSONArray jsonArray = null;
                         try {
                             jsonArray = response.getJSONArray("Respuesta");
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                String archivo = jsonObject.getString("archivo");
-                                String ruta = jsonObject.getString("w_ruta_url");
-                                String extension = jsonObject.getString("extension");
-                                //Log.e("data", jsonArray.getJSONObject(i).toString());
-                                alist.add(new Radicados(archivo, ruta, extension));
+                            if(jsonArray.length()==0){
+                                Toast.makeText(InfoActivity.this, "Este radicado no tiene adjuntos.", Toast.LENGTH_LONG).show();
+                            }else{
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                    String archivo = jsonObject.getString("archivo");
+                                    String ruta = jsonObject.getString("w_ruta_url");
+                                    String extension = jsonObject.getString("extension");
+                                    //Log.e("data", jsonArray.getJSONObject(i).toString());
+                                    alist.add(new Radicados(archivo, ruta, extension));
+                                }
                             }
                             adapter.notifyDataSetChanged();
                             musiclist.setAdapter(adapter);
